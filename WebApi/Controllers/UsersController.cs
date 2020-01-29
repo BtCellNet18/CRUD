@@ -11,21 +11,39 @@ using WebApi.Responses;
 
 namespace WebApi.Controllers
 {
+	/// <summary>
+	/// UserController class
+	/// </summary>
 	[Authorize]
-	[Route("api/[controller]")]
 	[ApiController]
+	[Route("api/[controller]")]
+	[Produces("application/json")]
 	public class UsersController : ControllerBase
 	{
 		private readonly IMapper _mapper;
 		private readonly IMediator _mediator;
 
+		/// <summary>
+		/// UserController constructor
+		/// </summary>
+		/// <param name="mapper">Mapper</param>
+		/// <param name="mediator">Mediator</param>
 		public UsersController(IMapper mapper, IMediator mediator)
 		{
 			_mapper = mapper;
 			_mediator = mediator;
 		}
 
+		/// <summary>
+		/// Gets all Users.
+		/// </summary>
+		/// <response code="200">OK</response> 
+		/// <response code="401">Unauthorized</response> 
+		/// <response code="500">Internal Server Error</response>  
 		[HttpGet]
+		[ProducesResponseType(200, Type = typeof(IEnumerable<UserResponse>))]
+		[ProducesResponseType(401, Type = typeof(void))]
+		[ProducesResponseType(500, Type = typeof(void))]
 		public async Task<ActionResult<IEnumerable<UserResponse>>> GetAll()
 		{
 			var query = new GetAllUsersQuery();
@@ -33,7 +51,19 @@ namespace WebApi.Controllers
 			return Ok(response);
 		}
 
+		/// <summary>
+		/// Get User.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <response code="200">OK</response> 
+		/// <response code="401">Unauthorized</response> 
+		/// <response code="404">Not Found</response> 
+		/// <response code="500">Internal Server Error</response>  
 		[HttpGet("{id}")]
+		[ProducesResponseType(200, Type = typeof(UserResponse))]
+		[ProducesResponseType(401, Type = typeof(void))]
+		[ProducesResponseType(404, Type = typeof(void))]
+		[ProducesResponseType(500, Type = typeof(void))]
 		public async Task<ActionResult<UserResponse>> GetById(int id)
 		{
 			var query = new GetUserByIdQuery(id);
@@ -41,8 +71,16 @@ namespace WebApi.Controllers
 			return response != null ? (ActionResult) Ok(response) : NotFound();
 		}
 
+		/// <summary>
+		/// Create User.
+		/// </summary> 
+		/// <param name="request"></param>
+		/// <response code="201">Created</response> 
+		/// <response code="500">Internal Server Error</response>  
 		[AllowAnonymous]
 		[HttpPost]
+		[ProducesResponseType(201, Type = typeof(UserResponse))]
+		[ProducesResponseType(500, Type = typeof(void))]
 		public async Task<ActionResult> Create([FromBody] CreateUserRequest request)
 		{
 			var command = _mapper.Map<CreateUserCommand>(request);
@@ -50,7 +88,20 @@ namespace WebApi.Controllers
 			return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
 		}
 
+		/// <summary>
+		/// Update User.
+		/// </summary> 
+		/// <param name="id"></param> 
+		/// <param name="request"></param>
+		/// <response code="200">OK</response> 
+		/// <response code="401">Unauthorized</response> 
+		/// <response code="404">Not Found</response> 
+		/// <response code="500">Internal Server Error</response>   
 		[HttpPut("{id}")]
+		[ProducesResponseType(200, Type = typeof(UserResponse))]
+		[ProducesResponseType(401, Type = typeof(void))]
+		[ProducesResponseType(404, Type = typeof(void))]
+		[ProducesResponseType(500, Type = typeof(void))]
 		public async Task<ActionResult> Update(int id, [FromBody] UpdateUserRequest request)
 		{
 			request.Id = id;
@@ -59,7 +110,19 @@ namespace WebApi.Controllers
 			return response != null ? (ActionResult) Ok(response) : NotFound();
 		}
 
+		/// <summary>
+		/// Delete User.
+		/// </summary> 
+		/// <param name="id"></param> 
+		/// <response code="204">No Content</response> 
+		/// <response code="401">Unauthorized</response> 
+		/// <response code="404">Not Found</response> 
+		/// <response code="500">Internal Server Error</response>   
 		[HttpDelete("{id}")]
+		[ProducesResponseType(204, Type = typeof(void))]
+		[ProducesResponseType(401, Type = typeof(void))]
+		[ProducesResponseType(404, Type = typeof(void))]
+		[ProducesResponseType(500, Type = typeof(void))]
 		public async Task<ActionResult> Delete(int id)
 		{
 			var command = new DeleteUserCommand(id);
