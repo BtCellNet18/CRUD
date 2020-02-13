@@ -38,12 +38,10 @@ namespace WebApi.Controllers
 		/// Gets all Users.
 		/// </summary>
 		/// <response code="200">OK</response> 
-		/// <response code="401">Unauthorized</response> 
-		/// <response code="500">Internal Server Error</response>  
+		/// <response code="401">Unauthorized</response>  
 		[HttpGet]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<UserResponse>))]
 		[ProducesResponseType(401, Type = typeof(void))]
-		[ProducesResponseType(500, Type = typeof(void))]
 		public async Task<ActionResult<IEnumerable<UserResponse>>> GetAll()
 		{
 			var query = new GetAllUsersQuery();
@@ -58,12 +56,10 @@ namespace WebApi.Controllers
 		/// <response code="200">OK</response> 
 		/// <response code="401">Unauthorized</response> 
 		/// <response code="404">Not Found</response> 
-		/// <response code="500">Internal Server Error</response>  
 		[HttpGet("{id}")]
 		[ProducesResponseType(200, Type = typeof(UserResponse))]
 		[ProducesResponseType(401, Type = typeof(void))]
 		[ProducesResponseType(404, Type = typeof(void))]
-		[ProducesResponseType(500, Type = typeof(void))]
 		public async Task<ActionResult<UserResponse>> GetById(int id)
 		{
 			var query = new GetUserByIdQuery(id);
@@ -75,17 +71,15 @@ namespace WebApi.Controllers
 		/// Create User.
 		/// </summary> 
 		/// <param name="request"></param>
-		/// <response code="201">Created</response> 
-		/// <response code="500">Internal Server Error</response>  
+		/// <response code="200">OK</response> 
 		[AllowAnonymous]
 		[HttpPost]
-		[ProducesResponseType(201, Type = typeof(UserResponse))]
-		[ProducesResponseType(500, Type = typeof(void))]
+		[ProducesResponseType(200, Type = typeof(UserResponse))]
 		public async Task<ActionResult> Create([FromBody] CreateUserRequest request)
 		{
 			var command = _mapper.Map<CreateUserCommand>(request);
 			var response = await _mediator.Send(command);
-			return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+			return Ok(response);
 		}
 
 		/// <summary>
@@ -96,12 +90,10 @@ namespace WebApi.Controllers
 		/// <response code="200">OK</response> 
 		/// <response code="401">Unauthorized</response> 
 		/// <response code="404">Not Found</response> 
-		/// <response code="500">Internal Server Error</response>   
 		[HttpPut("{id}")]
 		[ProducesResponseType(200, Type = typeof(UserResponse))]
 		[ProducesResponseType(401, Type = typeof(void))]
 		[ProducesResponseType(404, Type = typeof(void))]
-		[ProducesResponseType(500, Type = typeof(void))]
 		public async Task<ActionResult> Update(int id, [FromBody] UpdateUserRequest request)
 		{
 			request.Id = id;
@@ -114,20 +106,18 @@ namespace WebApi.Controllers
 		/// Delete User.
 		/// </summary> 
 		/// <param name="id"></param> 
-		/// <response code="204">No Content</response> 
+		/// <response code="200">OK</response> 
 		/// <response code="401">Unauthorized</response> 
 		/// <response code="404">Not Found</response> 
-		/// <response code="500">Internal Server Error</response>   
 		[HttpDelete("{id}")]
 		[ProducesResponseType(204, Type = typeof(void))]
 		[ProducesResponseType(401, Type = typeof(void))]
 		[ProducesResponseType(404, Type = typeof(void))]
-		[ProducesResponseType(500, Type = typeof(void))]
 		public async Task<ActionResult> Delete(int id)
 		{
 			var command = new DeleteUserCommand(id);
 			var response = await _mediator.Send(command);
-			return response != null ? (ActionResult) NoContent() : NotFound();
+			return response != null ? (ActionResult) Ok(response) : NotFound();
 		}
 
 		////[AllowAnonymous]

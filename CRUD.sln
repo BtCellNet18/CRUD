@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{0265107B-210D-4F8B-AB2A-24DEEB3FCB6E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6F2A73A1-C84C-4562-BF7F-4C79DC35A98D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{8A85D307-2832-497F-B67D-20427FABF656}"
 EndProject
 Global
